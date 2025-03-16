@@ -37,7 +37,9 @@ contract Raffle {
     address payable[] private s_players;
     uint256 private s_lastTimeStamp;
 
-    /**Events */
+    /**
+     * Events
+     */
     event EnteredRaffle(address indexed player);
 
     constructor(uint256 entranceFee, uint256 interval) {
@@ -65,7 +67,9 @@ contract Raffle {
         }
     }
 
-    /**Getting Function */
+    /**
+     * Getting Function
+     */
     function getEnteranceFee() external view returns (uint256) {
         return i_entranceFee;
     }
