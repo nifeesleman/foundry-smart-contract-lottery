@@ -23,13 +23,15 @@
 
 pragma solidity ^0.8.19;
 
+import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+
 /**
  * @title A Raffle contract
  * @author Nife Esleman
  * @notice This contract is for creating a sample raffle
  * @dev Implementing Chainlink VRFv2
  */
-contract Raffle {
+contract Raffle is VRFConsumerBaseV2Plus {
     error Raffle__NotEnoughEthSent();
 
     uint256 private immutable i_entranceFee;
@@ -42,10 +44,15 @@ contract Raffle {
      */
     event EnteredRaffle(address indexed player);
 
-    constructor(uint256 entranceFee, uint256 interval) {
+    constructor(
+        uint256 entranceFee,
+        uint256 interval,
+        address vrfCoordinator
+    ) VRFConsumerBaseV2Plus(vrfCoordinator) {
         i_entranceFee = entranceFee;
         i_interval = interval;
         s_lastTimeStamp = block.timestamp;
+        s_vrfCoordinator.requestRandomWords();
     }
 
     function enterRaffle() external payable {
@@ -61,11 +68,30 @@ contract Raffle {
     //1. Get a random number
     //2. Use random nuber to pick winner
     //3. Be automaticlly called
-    function pickWinner() external {
+    function pickWinner() external view {
         if ((block.timestamp - s_lastTimeStamp) < i_interval) {
             revert();
         }
+
+        requestId = s_vrfCoordinator.requestRandomWords(
+            VRFV2PlusClient.RandomWordsRequest({
+                keyHash: s_keyHash,
+                subId: s_subscriptionId,
+                requestConfirmations: requestConfirmations,
+                callbackGasLimit: callbackGasLimit,
+                numWords: numWords,
+                extraArgs: VRFV2PlusClient._argsToBytes(
+                    // Set nativePayment to true to pay for VRF requests with Sepolia ETH instead of LINK
+                    VRFV2PlusClient.ExtraArgsV1({nativePayment: false})
+                )
+            })
+        );
     }
+
+    function fulfillRandomWords(
+        uint256 requestId,
+        uint256[] calldata randomWords
+    ) internal override {}
 
     /**
      * Getting Function
