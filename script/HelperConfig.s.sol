@@ -22,8 +22,8 @@ abstract contract CodeContrants {
     uint256 public constant LOCAL_CHAIN_ID = 31337;
 }
 
-contract HelperConfirg is CodeContrants, Script {
-    error HelperConfirg__InvalidChainId();
+contract HelperConfig is CodeContrants, Script {
+    error HelperConfig__InvalidChainId();
 
     struct NetworkConfig {
         uint256 entranceFee;
@@ -48,7 +48,7 @@ contract HelperConfirg is CodeContrants, Script {
         } else if (chainId == LOCAL_CHAIN_ID) {
             return getOrCreateAnvilEthConfig();
         } else {
-            revert HelperConfirg__InvalidChainId();
+            revert HelperConfig__InvalidChainId();
         }
     }
 
