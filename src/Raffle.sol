@@ -126,7 +126,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
     ) public view returns (bool upkeepNeeded, bytes memory /* performData */) {
         bool timeHasPassed = ((block.timestamp - s_lastTimeStamp) >=
             i_interval);
-        bool isOpen = s_raffleState == RaffleState.OPENL;
+        bool isOpen = s_raffleState == RaffleState.OPEN;
         bool hasBalance = address(this).balance > 0;
         bool hasPlayers = s_players.length > 0;
         upkeepNeeded = timeHasPassed && isOpen && hasBalance && hasPlayers;
@@ -167,7 +167,8 @@ contract Raffle is VRFConsumerBaseV2Plus {
 
         //Checks
 
-        //Effet Internal Contract     uint256 indexOfWinner = randomWords[0] % s_players.length;
+        //Effet Internal Contract
+        uint256 indexOfWinner = randomWords[0] % s_players.length;
         address payable recentWinnner = s_players[indexOfWinner];
         s_recentWinner = recentWinnner;
         s_raffleState = RaffleState.OPEN;
