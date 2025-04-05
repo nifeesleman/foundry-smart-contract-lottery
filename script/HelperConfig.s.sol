@@ -19,7 +19,7 @@ abstract contract CodeContrants {
     /**
      * Chain Ids
      */
-    uint256 public constant ETH_SEPOLIA_CHAIN_ID = 1115511;
+    uint256 public constant ETH_SEPOLIA_CHAIN_ID = 11155111;
     uint256 public constant LOCAL_CHAIN_ID = 31337;
 }
 
@@ -34,6 +34,7 @@ contract HelperConfig is CodeContrants, Script {
         uint32 callbackGasLimit;
         uint256 subscriptionId;
         address link;
+        address account;
     }
 
     NetworkConfig public localNetworkConfig;
@@ -68,7 +69,8 @@ contract HelperConfig is CodeContrants, Script {
                 interval: 30,
                 callbackGasLimit: 500000,
                 vrfCoordnator: 0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B,
-                link: 0x779877A7B0D9E8603169DdbD7836e478b4624789
+                link: 0x779877A7B0D9E8603169DdbD7836e478b4624789,
+                account: 0x3bB9467e147b6BcD7F86724E24783A162c9b12EF
             });
     }
 
@@ -86,7 +88,7 @@ contract HelperConfig is CodeContrants, Script {
             MOCK_WEI_PER_UINT_LINK
         );
         LinkToken link = new LinkToken();
-        uint256 subscriptionId = vrfCoordnator.createSubscription();
+        // uint256 subscriptionId = vrfCoordnator.createSubscription();
         vm.stopBroadcast();
 
         localNetworkConfig = NetworkConfig({
@@ -95,8 +97,9 @@ contract HelperConfig is CodeContrants, Script {
             vrfCoordnator: address(vrfCoordnator),
             gasLane: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
             callbackGasLimit: 500000,
-            subscriptionId: subscriptionId,
-            link: address(link)
+            subscriptionId: 0,
+            link: address(link),
+            account: 0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38
         });
         // vm.deal(localNetworkConfig.account, 100 ether);
         return localNetworkConfig;
